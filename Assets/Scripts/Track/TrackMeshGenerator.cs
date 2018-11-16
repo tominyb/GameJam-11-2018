@@ -15,7 +15,7 @@ public class TrackMeshGenerator : MonoBehaviour
     private MeshFilter m_meshFilter;
     private int m_totalWaypointCount;
     private Vector2? m_previousWaypoint;
-    private CuboidBetweenWaypoints? m_previousCuboid;
+    private Vector3[] m_previousCuboidVertices;
 
     struct CuboidBetweenWaypoints
     {
@@ -25,7 +25,7 @@ public class TrackMeshGenerator : MonoBehaviour
 
         public CuboidBetweenWaypoints(
             Vector2 start, Vector2 end, float width, float thickness, int triangleOffset,
-            CuboidBetweenWaypoints? previousCuboid)
+            Vector3[] previousCuboidVertices)
         {
             // TODO: Clean up.
             float halfWidth = width * 0.5f;
@@ -34,13 +34,12 @@ public class TrackMeshGenerator : MonoBehaviour
             Vector3 topNormal = Quaternion.Euler(0, 0, 90) * surfaceTangent;
             Vector2 offset = topNormal * halfThickness;
             Vector3 startTopFront, startTopBack, startBottomFront, startBottomBack;
-            if (previousCuboid != null)
+            if (previousCuboidVertices != null)
             {
-                Vector3[] vertices = ((CuboidBetweenWaypoints) previousCuboid).Vertices;
-                startTopFront = vertices[1];
-                startTopBack = vertices[2];
-                startBottomFront = vertices[5];
-                startBottomBack = vertices[6];
+                startTopFront = previousCuboidVertices[1];
+                startTopBack = previousCuboidVertices[2];
+                startBottomFront = previousCuboidVertices[5];
+                startBottomBack = previousCuboidVertices[6];
             }
             else
             {
@@ -134,12 +133,12 @@ public class TrackMeshGenerator : MonoBehaviour
                 (Vector2) m_previousWaypoint, waypoint,
                 m_trackWidth, m_trackThickness,
                 previousMesh.vertices.Length,
-                m_previousCuboid);
+                m_previousCuboidVertices);
             mesh.vertices = previousMesh.vertices.Concat(cuboid.Vertices).ToArray();
             mesh.normals = previousMesh.normals.Concat(cuboid.Normals).ToArray();
             mesh.triangles = previousMesh.triangles.Concat(cuboid.Triangles).ToArray();
             m_meshFilter.mesh = mesh;
-            m_previousCuboid = cuboid;
+            m_previousCuboidVertices = cuboid.Vertices;
         }
         m_previousWaypoint = waypoint;
     }
@@ -147,6 +146,6 @@ public class TrackMeshGenerator : MonoBehaviour
     public void ClearPreviousWaypoint()
     {
         m_previousWaypoint = null;
-        m_previousCuboid = null;
+        m_previousCuboidVertices = null;
     }
 }
