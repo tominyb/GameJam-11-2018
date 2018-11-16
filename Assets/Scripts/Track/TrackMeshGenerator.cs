@@ -13,6 +13,7 @@ public class TrackMeshGenerator : MonoBehaviour
     [SerializeField] private int m_maxWaypointCount;
     [SerializeField] private Material m_material;
     private MeshFilter m_meshFilter;
+    private MeshCollider m_meshCollider;
     private int m_totalWaypointCount;
     private Vector2? m_previousWaypoint;
     private Vector3[] m_previousCuboidVertices;
@@ -103,6 +104,7 @@ public class TrackMeshGenerator : MonoBehaviour
     {
         InitMeshRenderer();
         InitMeshFilter();
+        InitMeshCollider();
     }
 
     private void InitMeshRenderer()
@@ -115,6 +117,11 @@ public class TrackMeshGenerator : MonoBehaviour
     {
         m_meshFilter = gameObject.AddComponent<MeshFilter>();
         m_meshFilter.mesh = new Mesh();
+    }
+
+    private void InitMeshCollider()
+    {
+        m_meshCollider = GetComponent<MeshCollider>();
     }
 
     public void AddWaypoint(Vector2 waypoint)
@@ -137,8 +144,9 @@ public class TrackMeshGenerator : MonoBehaviour
             mesh.vertices = previousMesh.vertices.Concat(cuboid.Vertices).ToArray();
             mesh.normals = previousMesh.normals.Concat(cuboid.Normals).ToArray();
             mesh.triangles = previousMesh.triangles.Concat(cuboid.Triangles).ToArray();
-            m_meshFilter.mesh = mesh;
+            m_meshFilter.sharedMesh = mesh;
             m_previousCuboidVertices = cuboid.Vertices;
+            m_meshCollider.sharedMesh = mesh;
         }
         m_previousWaypoint = waypoint;
     }
