@@ -46,17 +46,17 @@ public class TrackMeshGenerator : MonoBehaviour
             {
                 Vector2 startTop = start + offset;
                 Vector2 startBottom = start - offset;
-                startTopFront = new Vector3(startTop.x, startTop.y, -halfThickness);
-                startTopBack = new Vector3(startTop.x, startTop.y, halfThickness);
-                startBottomFront = new Vector3(startBottom.x, startBottom.y, -halfThickness);
-                startBottomBack = new Vector3(startBottom.x, startBottom.y, halfThickness);
+                startTopFront = new Vector3(startTop.x, startTop.y, -halfWidth);
+                startTopBack = new Vector3(startTop.x, startTop.y, halfWidth);
+                startBottomFront = new Vector3(startBottom.x, startBottom.y, -halfWidth);
+                startBottomBack = new Vector3(startBottom.x, startBottom.y, halfWidth);
             }
             Vector2 endTop = end + offset;
             Vector2 endBottom = end - offset;
-            Vector3 endTopFront = new Vector3(endTop.x, endTop.y, -halfThickness);
-            Vector3 endTopBack = new Vector3(endTop.x, endTop.y, halfThickness);
-            Vector3 endBottomFront = new Vector3(endBottom.x, endBottom.y, -halfThickness);
-            Vector3 endBottomBack = new Vector3(endBottom.x, endBottom.y, halfThickness);
+            Vector3 endTopFront = new Vector3(endTop.x, endTop.y, -halfWidth);
+            Vector3 endTopBack = new Vector3(endTop.x, endTop.y, halfWidth);
+            Vector3 endBottomFront = new Vector3(endBottom.x, endBottom.y, -halfWidth);
+            Vector3 endBottomBack = new Vector3(endBottom.x, endBottom.y, halfWidth);
             Vertices = new Vector3[]
             {
                 // Top
