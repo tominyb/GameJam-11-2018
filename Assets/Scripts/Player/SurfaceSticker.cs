@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody))]
 public class SurfaceSticker : MonoBehaviour
 {
     private readonly Vector2[] directions = new Vector2[]
@@ -15,18 +15,15 @@ public class SurfaceSticker : MonoBehaviour
         Vector2.right,
     };
 
-    public bool IsSticking { get { return m_surface != null; } }
+    [SerializeField] private float m_raycastDistance;
 
-    [SerializeField] private float m_distance;
-
-    private int m_groundMask;
-    private RaycastHit2D m_contactPoint;
-    private Rigidbody2D m_rigidbody;
+    private RaycastHit m_contactPoint;
+    private Rigidbody m_rigidbody;
     private SurfaceBehaviour m_surface;
 
     private void Awake()
     {
-        m_rigidbody = GetComponent<Rigidbody2D>();
+        m_rigidbody = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
@@ -36,26 +33,41 @@ public class SurfaceSticker : MonoBehaviour
         if (m_surface == null)
             return;
 
-        m_surface.Pull(m_contactPoint.normal, m_rigidbody);
+        m_surface.HandleContact(m_contactPoint.normal, m_rigidbody);
+
+        Debug.DrawLine(
+            transform.position,
+            transform.position + m_rigidbody.velocity.normalized * 2f,
+            Color.red
+        );
     }
 
-    private SurfaceBehaviour ScanForSurfaces(out RaycastHit2D point)
+    private SurfaceBehaviour ScanForSurfaces(out RaycastHit point)
     {
+        SurfaceBehaviour closest = null;
+        var closestDistance = float.MaxValue;
+        point = new RaycastHit();
+
         foreach (var dir in directions)
         {
-            var hit = Physics2D.Raycast(transform.position, dir, m_distance, 1 << LayerMask.NameToLayer("Surface"));
-            if (!hit)
+            var ray = new Ray(transform.position, dir);
+            RaycastHit hit;
+            var result = Physics.Raycast(ray, out hit, m_raycastDistance, 1 << LayerMask.NameToLayer("Surface"));
+            if (!result)
                 continue;
 
             var surface = hit.collider.GetComponent<SurfaceBehaviour>();
-            if (surface != null && surface.SurfaceType == SurfaceBehaviour.Type.Magnetic)
+            if (surface == null)
+                continue;
+
+            if (closest == null || hit.distance < closestDistance)
             {
                 point = hit;
-                return surface;
+                closest = surface;
+                closestDistance = hit.distance;
             }
         }
 
-        point = new RaycastHit2D();
-        return null;
+        return closest;
     }
 }
