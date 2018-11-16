@@ -194,6 +194,58 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 127626984}
   m_CullTransparentMesh: 0
+--- !u!1001 &457096373
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4988671918567662, guid: 613d451a5066c3e41a2d1073c932a423, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4988671918567662, guid: 613d451a5066c3e41a2d1073c932a423, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4988671918567662, guid: 613d451a5066c3e41a2d1073c932a423, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4988671918567662, guid: 613d451a5066c3e41a2d1073c932a423, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4988671918567662, guid: 613d451a5066c3e41a2d1073c932a423, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4988671918567662, guid: 613d451a5066c3e41a2d1073c932a423, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4988671918567662, guid: 613d451a5066c3e41a2d1073c932a423, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4988671918567662, guid: 613d451a5066c3e41a2d1073c932a423, type: 2}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114541995827098144, guid: 613d451a5066c3e41a2d1073c932a423,
+        type: 2}
+      propertyPath: m_projectileSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114541995827098144, guid: 613d451a5066c3e41a2d1073c932a423,
+        type: 2}
+      propertyPath: m_damage
+      value: 2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 613d451a5066c3e41a2d1073c932a423, type: 2}
+  m_IsPrefabAsset: 0
 --- !u!1 &638106099
 GameObject:
   m_ObjectHideFlags: 0
