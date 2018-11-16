@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(Collider2D))]
 public class SurfaceBehaviour : MonoBehaviour
 {
     public enum Type
@@ -8,10 +9,16 @@ public class SurfaceBehaviour : MonoBehaviour
         Magnetic,
     }
 
-    [SerializeField] float m_forceFactor;
-    [SerializeField] Type  m_type;
+    public Type SurfaceType { get { return m_type; } }
 
-    private void HandleContact(Rigidbody2D other)
+    [SerializeField] private float m_forceFactor;
+    [SerializeField] private Type  m_type;
+
+    private void Awake()
+    {
+    }
+
+    private void HandleContact(ContactPoint2D contactPoint, Rigidbody2D other)
     {
         switch (m_type)
         {
@@ -19,7 +26,7 @@ public class SurfaceBehaviour : MonoBehaviour
                 Accelerate(other);
                 break;
             case (Type.Magnetic):
-                Pull(other);
+                Pull(contactPoint.normal, other);
                 break;
         }
     }
@@ -29,9 +36,9 @@ public class SurfaceBehaviour : MonoBehaviour
         other.velocity *= m_forceFactor;
     }
 
-    private void Pull(Rigidbody2D other)
+    public void Pull(Vector2 normal, Rigidbody2D other)
     {
-
+        other.AddForce(-normal * m_forceFactor);
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -39,6 +46,6 @@ public class SurfaceBehaviour : MonoBehaviour
         if (!collision.rigidbody)
             return;
 
-        HandleContact(collision.rigidbody);
+        HandleContact(collision.GetContact(0), collision.rigidbody);
     }
 }
