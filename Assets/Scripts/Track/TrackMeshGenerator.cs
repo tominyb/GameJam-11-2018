@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 public class TrackMeshGenerator : MonoBehaviour
@@ -13,8 +11,9 @@ public class TrackMeshGenerator : MonoBehaviour
     [SerializeField] private float m_trackWidth;
     [SerializeField] private int m_maxWaypointCount;
     [SerializeField] private Material m_material;
-    private List<Vector2> m_waypoints;
     private MeshFilter m_meshFilter;
+    private int m_totalWaypointCount;
+    private Vector2? m_previousWaypoint;
 
     struct QuadBetweenWaypoints
     {
@@ -50,14 +49,8 @@ public class TrackMeshGenerator : MonoBehaviour
 
     private void Start()
     {
-        InitWaypoints();
         InitMeshRenderer();
         InitMeshFilter();
-    }
-
-    private void InitWaypoints()
-    {
-        m_waypoints = new List<Vector2>(m_maxWaypointCount);
     }
 
     private void InitMeshRenderer()
@@ -74,23 +67,29 @@ public class TrackMeshGenerator : MonoBehaviour
 
     public void AddWaypoint(Vector2 waypoint)
     {
-        if (m_waypoints.Count == m_maxWaypointCount)
+        ++m_totalWaypointCount;
+        if (m_totalWaypointCount >= m_maxWaypointCount)
         {
             Debug.LogWarning("Max waypoint count reached. Discarding new waypoint.");
             return;
         }
-        m_waypoints.Add(waypoint);
-        if (m_waypoints.Count > 1)
+        if (m_previousWaypoint != null)
         {
             Mesh previousMesh = m_meshFilter.sharedMesh;
             Mesh mesh = new Mesh();
             QuadBetweenWaypoints quad = new QuadBetweenWaypoints(
-                waypoint, m_waypoints[m_waypoints.Count - 2],
+                (Vector2) m_previousWaypoint, waypoint,
                 m_trackWidth, previousMesh.vertices.Length);
             mesh.vertices = previousMesh.vertices.Concat(quad.Vertices).ToArray();
             mesh.normals = previousMesh.normals.Concat(quad.Normals).ToArray();
             mesh.triangles = previousMesh.triangles.Concat(quad.Triangles).ToArray();
             m_meshFilter.mesh = mesh;
         }
+        m_previousWaypoint = waypoint;
+    }
+
+    public void ClearPreviousWaypoint()
+    {
+        m_previousWaypoint = null;
     }
 }
