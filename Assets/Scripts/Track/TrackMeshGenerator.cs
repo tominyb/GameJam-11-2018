@@ -9,40 +9,93 @@ public class TrackMeshGenerator : MonoBehaviour
     private const int TriangleIndicesPerQuad = TrianglesPerQuad * 3;
 
     [SerializeField] private float m_trackWidth;
+    [SerializeField] private float m_trackThickness;
     [SerializeField] private int m_maxWaypointCount;
     [SerializeField] private Material m_material;
     private MeshFilter m_meshFilter;
     private int m_totalWaypointCount;
     private Vector2? m_previousWaypoint;
+    private CuboidBetweenWaypoints? m_previousCuboid;
 
-    struct QuadBetweenWaypoints
+    struct CuboidBetweenWaypoints
     {
         public Vector3[] Vertices;
         public Vector3[] Normals;
         public int[] Triangles;
 
-        public QuadBetweenWaypoints(Vector2 start, Vector2 end, float width, int triangleOffset)
+        public CuboidBetweenWaypoints(
+            Vector2 start, Vector2 end, float width, float thickness, int triangleOffset,
+            CuboidBetweenWaypoints? previousCuboid)
         {
+            // TODO: Clean up.
             float halfWidth = width * 0.5f;
+            float halfThickness = thickness * 0.5f;
+            Vector2 surfaceTangent = (end - start).normalized;
+            Vector3 topNormal = Quaternion.Euler(0, 0, 90) * surfaceTangent;
+            Vector2 offset = topNormal * halfThickness;
+            Vector3 startTopFront, startTopBack, startBottomFront, startBottomBack;
+            if (previousCuboid != null)
+            {
+                Vector3[] vertices = ((CuboidBetweenWaypoints) previousCuboid).Vertices;
+                startTopFront = vertices[1];
+                startTopBack = vertices[2];
+                startBottomFront = vertices[5];
+                startBottomBack = vertices[6];
+            }
+            else
+            {
+                Vector2 startTop = start + offset;
+                Vector2 startBottom = start - offset;
+                startTopFront = new Vector3(startTop.x, startTop.y, -halfThickness);
+                startTopBack = new Vector3(startTop.x, startTop.y, halfThickness);
+                startBottomFront = new Vector3(startBottom.x, startBottom.y, -halfThickness);
+                startBottomBack = new Vector3(startBottom.x, startBottom.y, halfThickness);
+            }
+            Vector2 endTop = end + offset;
+            Vector2 endBottom = end - offset;
+            Vector3 endTopFront = new Vector3(endTop.x, endTop.y, -halfThickness);
+            Vector3 endTopBack = new Vector3(endTop.x, endTop.y, halfThickness);
+            Vector3 endBottomFront = new Vector3(endBottom.x, endBottom.y, -halfThickness);
+            Vector3 endBottomBack = new Vector3(endBottom.x, endBottom.y, halfThickness);
             Vertices = new Vector3[]
             {
-                new Vector3(start.x, start.y, -halfWidth),
-                new Vector3(end.x, end.y, -halfWidth),
-                new Vector3(end.x, end.y, halfWidth),
-                new Vector3(start.x, start.y, halfWidth)
+                // Top
+                startTopFront,
+                endTopFront,
+                endTopBack,
+                startTopBack,
+                // Bottom
+                startBottomFront,
+                endBottomFront,
+                endBottomBack,
+                startBottomBack,
+                // Front
+                startTopFront,
+                endTopFront,
+                endBottomFront,
+                startBottomFront
             };
             {
-                Vector3 normal = Quaternion.Euler(0, 0, 90) * (end - start);
-                Normals = new Vector3[NormalsPerQuad];
-                for (int i = 0; i < NormalsPerQuad; ++i)
+                Vector3 bottomNormal = Quaternion.Euler(0, 0, 90) * surfaceTangent;
+                Vector3 frontNormal = Vector3.back;
+                Normals = new Vector3[]
                 {
-                    Normals[i] = normal;
-                }
+                    topNormal, topNormal, topNormal, topNormal,
+                    bottomNormal, bottomNormal, bottomNormal, bottomNormal,
+                    frontNormal, frontNormal, frontNormal, frontNormal
+                };
             }
             Triangles = new int[]
             {
+                // Top
                 triangleOffset, triangleOffset + 2, triangleOffset + 1,
-                triangleOffset, triangleOffset + 3, triangleOffset + 2
+                triangleOffset, triangleOffset + 3, triangleOffset + 2,
+                // Bottom
+                triangleOffset + 4, triangleOffset + 5, triangleOffset + 6,
+                triangleOffset + 6, triangleOffset + 7, triangleOffset + 4,
+                // Front
+                triangleOffset + 8, triangleOffset + 9, triangleOffset + 10,
+                triangleOffset + 10, triangleOffset + 11, triangleOffset + 8
             };
         }
     }
@@ -77,13 +130,16 @@ public class TrackMeshGenerator : MonoBehaviour
         {
             Mesh previousMesh = m_meshFilter.sharedMesh;
             Mesh mesh = new Mesh();
-            QuadBetweenWaypoints quad = new QuadBetweenWaypoints(
+            CuboidBetweenWaypoints cuboid = new CuboidBetweenWaypoints(
                 (Vector2) m_previousWaypoint, waypoint,
-                m_trackWidth, previousMesh.vertices.Length);
-            mesh.vertices = previousMesh.vertices.Concat(quad.Vertices).ToArray();
-            mesh.normals = previousMesh.normals.Concat(quad.Normals).ToArray();
-            mesh.triangles = previousMesh.triangles.Concat(quad.Triangles).ToArray();
+                m_trackWidth, m_trackThickness,
+                previousMesh.vertices.Length,
+                m_previousCuboid);
+            mesh.vertices = previousMesh.vertices.Concat(cuboid.Vertices).ToArray();
+            mesh.normals = previousMesh.normals.Concat(cuboid.Normals).ToArray();
+            mesh.triangles = previousMesh.triangles.Concat(cuboid.Triangles).ToArray();
             m_meshFilter.mesh = mesh;
+            m_previousCuboid = cuboid;
         }
         m_previousWaypoint = waypoint;
     }
@@ -91,5 +147,6 @@ public class TrackMeshGenerator : MonoBehaviour
     public void ClearPreviousWaypoint()
     {
         m_previousWaypoint = null;
+        m_previousCuboid = null;
     }
 }
