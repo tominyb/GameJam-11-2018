@@ -10,6 +10,7 @@ public class TrackMeshGenerator : MonoBehaviour
 
     [SerializeField] private float m_trackWidth;
     [SerializeField] private Vector2[] m_waypoints = { };
+    [SerializeField] private Material m_material;
 
     private void Start()
     {
@@ -17,9 +18,10 @@ public class TrackMeshGenerator : MonoBehaviour
         InitMeshFilter();
     }
 
-    private void  InitMeshRenderer()
+    private void InitMeshRenderer()
     {
-        gameObject.AddComponent<MeshRenderer>();
+        MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        meshRenderer.material = m_material;
     }
 
     private void InitMeshFilter()
@@ -38,6 +40,7 @@ public class TrackMeshGenerator : MonoBehaviour
         float halfTrackWidth = m_trackWidth * 0.5f;
         int stepCount = m_waypoints.Length - 1;
         Vector3[] vertices = new Vector3[stepCount * VerticesPerStep];
+        Vector3[] normals = new Vector3[vertices.Length];
         int[] triangles = new int[stepCount * TriangleIndicesPerStep];
         for (int i = 0, j = 0, k = 0; i < stepCount; ++i, j += VerticesPerStep, k += TriangleIndicesPerStep)
         {
@@ -47,6 +50,13 @@ public class TrackMeshGenerator : MonoBehaviour
             vertices[j + 1] = new Vector3(end.x, end.y, -halfTrackWidth);
             vertices[j + 2] = new Vector3(end.x, end.y, halfTrackWidth);
             vertices[j + 3] = new Vector3(start.x, start.y, halfTrackWidth);
+            {
+                Vector3 normal = Quaternion.Euler(0, 0, 90) * (end - start);
+                for (int n = 0; n < VerticesPerStep; ++n)
+                {
+                    normals[j + n] = normal;
+                }
+            }
             triangles[k] = j;
             triangles[k + 1] = j + 2;
             triangles[k + 2] = j + 1;
@@ -56,6 +66,7 @@ public class TrackMeshGenerator : MonoBehaviour
         }
         Mesh mesh = new Mesh();
         mesh.vertices = vertices;
+        mesh.normals = normals;
         mesh.triangles = triangles;
         return mesh;
     }
