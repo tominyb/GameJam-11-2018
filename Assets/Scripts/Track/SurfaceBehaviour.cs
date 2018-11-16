@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(Collider))]
 public class SurfaceBehaviour : MonoBehaviour
 {
     public enum Type
@@ -14,7 +14,7 @@ public class SurfaceBehaviour : MonoBehaviour
     [SerializeField] private float m_forceFactor;
     [SerializeField] private Type  m_type;
 
-    public void HandleContact(Vector2 pointNormal, Rigidbody2D other)
+    public void HandleContact(Vector2 pointNormal, Rigidbody other)
     {
         if (m_type == Type.Accelerating)
             Accelerate(pointNormal, other);
@@ -23,12 +23,12 @@ public class SurfaceBehaviour : MonoBehaviour
             Pull(pointNormal, other);
     }
 
-    private void Accelerate(Vector2 normal, Rigidbody2D other)
+    private void Accelerate(Vector2 normal, Rigidbody other)
     {
         other.velocity *= (1 + m_forceFactor * Time.fixedDeltaTime);
     }
 
-    private void Pull(Vector2 normal, Rigidbody2D other)
+    private void Pull(Vector2 normal, Rigidbody other)
     {
         Vector3 movement = other.velocity;
         var tangential = Vector3.ProjectOnPlane(movement, normal).normalized;
