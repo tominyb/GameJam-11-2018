@@ -1,42 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    private const float DistanceBetweenPoints = 4.0f;
+
     [SerializeField] private TrackMeshGenerator m_trackMeshGenerator;
 
-    private List<Vector3> m_points = new List<Vector3>();
-
-    private const float DistanceBetweenPoints = 50.0f;
+    private Vector2 m_previousPoint;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        m_points.Clear();
-        m_points.Add(eventData.position);
+        m_previousPoint = eventData.position;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        float distance = Vector3.Distance(m_points[m_points.Count - 1], eventData.position);
+        float distance = Vector2.Distance(m_previousPoint, eventData.position);
         if (distance >= DistanceBetweenPoints)
         {
-            Vector3 point = Camera.main.ScreenToWorldPoint((Vector3) eventData.position
-                - new Vector3(0.0f, 0.0f, Camera.main.transform.position.z));
-            m_trackMeshGenerator.AddWaypoint(point);
-            m_points.Add(point);
+            m_trackMeshGenerator.AddWaypoint(
+                Camera.main.ScreenToWorldPoint((Vector3) eventData.position
+                - new Vector3(0.0f, 0.0f, Camera.main.transform.position.z)));
+            m_previousPoint = eventData.position;
         }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        m_points.Add(eventData.position);
-    }
-
-    public void Draw(Vector3 point)
-    {
-        GameObject cube         = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube.transform.position = Camera.main.ScreenToWorldPoint(point - new Vector3(0.0f, 0.0f, Camera.main.transform.position.z));
+        m_trackMeshGenerator.ClearPreviousWaypoint();
     }
 }
