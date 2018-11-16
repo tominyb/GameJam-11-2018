@@ -7,9 +7,7 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 {
     private List<Vector3> m_points = new List<Vector3>();
 
-    private float m_distanceTraversed = 0.0f;
-
-    private const float DistanceBetweenPoints = 0.5f;
+    private const float DistanceBetweenPoints = 50.0f;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -19,27 +17,23 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
-        m_distanceTraversed += Vector3.Distance(m_points[m_points.Count - 1], eventData.position);
+        float distance = Vector3.Distance(m_points[m_points.Count - 1], eventData.position);
 
-        if (m_distanceTraversed >= DistanceBetweenPoints)
+        if (distance >= DistanceBetweenPoints)
         {
             m_points.Add(eventData.position);
-            m_distanceTraversed = 0.0f;
+            Draw(eventData.position);
         }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         m_points.Add(eventData.position);
-        Draw();
     }
 
-    public void Draw()
+    public void Draw(Vector3 point)
     {
-        foreach (Vector3 point in m_points)
-        {
-            GameObject cube         = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.transform.position = Camera.main.ScreenToWorldPoint(point);
-        }
+        GameObject cube         = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.transform.position = Camera.main.ScreenToWorldPoint(point - new Vector3(0.0f, 0.0f, Camera.main.transform.position.z));
     }
 }
