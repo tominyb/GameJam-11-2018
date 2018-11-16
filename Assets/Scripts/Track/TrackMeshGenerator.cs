@@ -140,6 +140,7 @@ public class TrackMeshGenerator : MonoBehaviour
             mesh.triangles = previousMesh.triangles.Concat(cuboid.Triangles).ToArray();
             m_meshFilter.mesh = mesh;
             m_previousCuboid = cuboid;
+            GetComponent<MeshCollider>().sharedMesh = mesh;
         }
         m_previousWaypoint = waypoint;
     }

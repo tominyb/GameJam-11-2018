@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e372ad55b7dc1c4a80936b21de4fe57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_forceFactor: 0.1
+  m_forceFactor: -1
   m_type: 0
 --- !u!65 &107153849
 BoxCollider:
@@ -748,7 +748,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e372ad55b7dc1c4a80936b21de4fe57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_forceFactor: 1.5
+  m_forceFactor: 2
   m_type: 0
 --- !u!65 &1985432877
 BoxCollider:
