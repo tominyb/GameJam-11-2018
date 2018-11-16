@@ -16,9 +16,9 @@ public abstract class Monster : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Player") // Kill player here.
+        if (collision.gameObject.tag == "Player")
         {
-            
+            Player.I.TakeDamage(m_damage);
         }
     }
 }
