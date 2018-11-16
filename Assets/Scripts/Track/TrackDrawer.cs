@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 
 public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    [SerializeField] private TrackMeshGenerator m_trackMeshGenerator;
+
     private List<Vector3> m_points = new List<Vector3>();
 
     private const float DistanceBetweenPoints = 50.0f;
@@ -18,11 +20,12 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public void OnDrag(PointerEventData eventData)
     {
         float distance = Vector3.Distance(m_points[m_points.Count - 1], eventData.position);
-
         if (distance >= DistanceBetweenPoints)
         {
-            m_points.Add(eventData.position);
-            Draw(eventData.position);
+            Vector3 point = Camera.main.ScreenToWorldPoint((Vector3) eventData.position
+                - new Vector3(0.0f, 0.0f, Camera.main.transform.position.z));
+            m_trackMeshGenerator.AddWaypoint(point);
+            m_points.Add(point);
         }
     }
 

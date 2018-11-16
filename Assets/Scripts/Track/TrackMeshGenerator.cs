@@ -1,62 +1,96 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TrackMeshGenerator : MonoBehaviour
 {
-    private const int VerticesPerStep = 4;
-    private const int TrianglesPerStep = 2;
-    private const int TriangleIndicesPerStep = TrianglesPerStep * 3;
+    private const int VerticesPerQuad = 4;
+    private const int NormalsPerQuad = VerticesPerQuad;
+    private const int TrianglesPerQuad = 2;
+    private const int TriangleIndicesPerQuad = TrianglesPerQuad * 3;
 
     [SerializeField] private float m_trackWidth;
-    [SerializeField] private Vector2[] m_waypoints = { };
+    [SerializeField] private int m_maxWaypointCount;
+    [SerializeField] private Material m_material;
+    private List<Vector2> m_waypoints;
+    private MeshFilter m_meshFilter;
+
+    struct QuadBetweenWaypoints
+    {
+        public Vector3[] Vertices;
+        public Vector3[] Normals;
+        public int[] Triangles;
+
+        public QuadBetweenWaypoints(Vector2 start, Vector2 end, float width, int triangleOffset)
+        {
+            float halfWidth = width * 0.5f;
+            Vertices = new Vector3[]
+            {
+                new Vector3(start.x, start.y, -halfWidth),
+                new Vector3(end.x, end.y, -halfWidth),
+                new Vector3(end.x, end.y, halfWidth),
+                new Vector3(start.x, start.y, halfWidth)
+            };
+            {
+                Vector3 normal = Quaternion.Euler(0, 0, 90) * (end - start);
+                Normals = new Vector3[NormalsPerQuad];
+                for (int i = 0; i < NormalsPerQuad; ++i)
+                {
+                    Normals[i] = normal;
+                }
+            }
+            Triangles = new int[]
+            {
+                triangleOffset, triangleOffset + 2, triangleOffset + 1,
+                triangleOffset, triangleOffset + 3, triangleOffset + 2
+            };
+        }
+    }
 
     private void Start()
     {
+        InitWaypoints();
         InitMeshRenderer();
         InitMeshFilter();
     }
 
-    private void  InitMeshRenderer()
+    private void InitWaypoints()
     {
-        gameObject.AddComponent<MeshRenderer>();
+        m_waypoints = new List<Vector2>(m_maxWaypointCount);
+    }
+
+    private void InitMeshRenderer()
+    {
+        MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        meshRenderer.material = m_material;
     }
 
     private void InitMeshFilter()
     {
-        MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
-        meshFilter.mesh = GenerateMesh();
+        m_meshFilter = gameObject.AddComponent<MeshFilter>();
+        m_meshFilter.mesh = new Mesh();
     }
 
-    private Mesh GenerateMesh()
+    public void AddWaypoint(Vector2 waypoint)
     {
-        if (m_waypoints.Length < 2)
+        if (m_waypoints.Count == m_maxWaypointCount)
         {
-            Debug.LogError("At least 2 waypoints are necessary for vertex generation.");
-            return null;
+            Debug.LogWarning("Max waypoint count reached. Discarding new waypoint.");
+            return;
         }
-        float halfTrackWidth = m_trackWidth * 0.5f;
-        int stepCount = m_waypoints.Length - 1;
-        Vector3[] vertices = new Vector3[stepCount * VerticesPerStep];
-        int[] triangles = new int[stepCount * TriangleIndicesPerStep];
-        for (int i = 0, j = 0, k = 0; i < stepCount; ++i, j += VerticesPerStep, k += TriangleIndicesPerStep)
+        m_waypoints.Add(waypoint);
+        if (m_waypoints.Count > 1)
         {
-            Vector2 start = m_waypoints[i];
-            Vector2 end = m_waypoints[i + 1];
-            vertices[j] = new Vector3(start.x, start.y, -halfTrackWidth);
-            vertices[j + 1] = new Vector3(end.x, end.y, -halfTrackWidth);
-            vertices[j + 2] = new Vector3(end.x, end.y, halfTrackWidth);
-            vertices[j + 3] = new Vector3(start.x, start.y, halfTrackWidth);
-            triangles[k] = j;
-            triangles[k + 1] = j + 2;
-            triangles[k + 2] = j + 1;
-            triangles[k + 3] = j;
-            triangles[k + 4] = j + 3;
-            triangles[k + 5] = j + 2;
+            Mesh previousMesh = m_meshFilter.sharedMesh;
+            Mesh mesh = new Mesh();
+            QuadBetweenWaypoints quad = new QuadBetweenWaypoints(
+                waypoint, m_waypoints[m_waypoints.Count - 2],
+                m_trackWidth, previousMesh.vertices.Length);
+            mesh.vertices = previousMesh.vertices.Concat(quad.Vertices).ToArray();
+            mesh.normals = previousMesh.normals.Concat(quad.Normals).ToArray();
+            mesh.triangles = previousMesh.triangles.Concat(quad.Triangles).ToArray();
+            m_meshFilter.mesh = mesh;
         }
-        Mesh mesh = new Mesh();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        return mesh;
     }
 }
