@@ -14,38 +14,24 @@ public class SurfaceBehaviour : MonoBehaviour
     [SerializeField] private float m_forceFactor;
     [SerializeField] private Type  m_type;
 
-    private void Awake()
+    public void HandleContact(Vector2 pointNormal, Rigidbody2D other)
     {
+        if (m_type == Type.Accelerating)
+            Accelerate(pointNormal, other);
+
+        if (m_type == Type.Magnetic)
+            Pull(pointNormal, other);
     }
 
-    private void HandleContact(ContactPoint2D contactPoint, Rigidbody2D other)
+    private void Accelerate(Vector2 normal, Rigidbody2D other)
     {
-        switch (m_type)
-        {
-            case (Type.Accelerating):
-                Accelerate(other);
-                break;
-            case (Type.Magnetic):
-                Pull(contactPoint.normal, other);
-                break;
-        }
+        other.velocity *= (1 + m_forceFactor * Time.fixedDeltaTime);
     }
 
-    private void Accelerate(Rigidbody2D other)
+    private void Pull(Vector2 normal, Rigidbody2D other)
     {
-        other.velocity *= m_forceFactor;
-    }
-
-    public void Pull(Vector2 normal, Rigidbody2D other)
-    {
-        other.AddForce(-normal * m_forceFactor);
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        if (!collision.rigidbody)
-            return;
-
-        HandleContact(collision.GetContact(0), collision.rigidbody);
+        Vector3 movement = other.velocity;
+        var tangential = Vector3.ProjectOnPlane(movement, normal).normalized;
+        other.velocity = tangential * movement.magnitude;
     }
 }
