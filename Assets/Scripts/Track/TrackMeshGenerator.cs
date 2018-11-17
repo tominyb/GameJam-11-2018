@@ -32,10 +32,6 @@ public class TrackMeshGenerator : MonoBehaviour
         InitMeshCollider();
     }
 
-    public void ResetMesh()
-    {
-    }
-
     private void InitLayerMask()
     {
         gameObject.layer = LayerMask.NameToLayer("Surface");

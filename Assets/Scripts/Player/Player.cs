@@ -49,5 +49,6 @@ public class Player : MonoBehaviour
     {
         m_rigidbody.velocity = Vector3.zero;
         m_rigidbody.rotation = Quaternion.identity;
+        m_rigidbody.angularVelocity = Vector3.zero;
     }
 }

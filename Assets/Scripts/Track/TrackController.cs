@@ -56,6 +56,6 @@ public class TrackController : MonoBehaviour
     public void ResetAll()
     {
         foreach (var track in m_tracks)
-            track.MeshGenerator.ResetMesh();
+            track.MeshGenerator.Reset();
     }
 }
