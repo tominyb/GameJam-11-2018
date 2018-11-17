@@ -12,6 +12,7 @@ public class TrackController : MonoBehaviour
     {
         public KeyCode InputKey;
         public Image SelectionImage;
+        public Button SelectionButton;
         public TrackMeshGenerator MeshGenerator;
     }
 
@@ -27,6 +28,11 @@ public class TrackController : MonoBehaviour
     private void Start()
     {
         m_selected = m_tracks[0];
+        foreach (var sel in m_tracks)
+        {
+            sel.SelectionButton.onClick.RemoveAllListeners();
+            sel.SelectionButton.onClick.AddListener(() => SelectTrack(sel));
+        }
         UpdateTrackSelections();
     }
 
@@ -37,10 +43,15 @@ public class TrackController : MonoBehaviour
             if (!Input.GetKeyDown(track.InputKey) || track == m_selected)
                 continue;
 
-            m_selected = track;
-            m_drawer.SetMeshGenerator(m_selected.MeshGenerator);
-            UpdateTrackSelections();
+            SelectTrack(track);
         }
+    }
+
+    private void SelectTrack(TrackSelection track)
+    {
+        m_selected = track;
+        m_drawer.SetMeshGenerator(m_selected.MeshGenerator);
+        UpdateTrackSelections();
     }
 
     private void UpdateTrackSelections()
