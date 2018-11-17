@@ -7,9 +7,8 @@ public class CameraFollowTarget : MonoBehaviour
     [SerializeField] private float          m_threshold;
     [SerializeField] private Vector2        m_offset;
     [SerializeField] private GameObject     m_target;
-    [SerializeField] private BoundingBox    m_limits;
 
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         if (m_target == null)
             return;
