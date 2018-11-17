@@ -596,9 +596,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55a10a4a206592f4ab821802b9d8a460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1142034353}
-  endZone: {fileID: 1767793276}
-  splashText: {fileID: 1312956074}
+  m_player: {fileID: 1142034353}
+  m_endZone: {fileID: 1767793276}
+  m_trackController: {fileID: 1360446743}
+  m_splashText: {fileID: 1312956074}
 --- !u!1 &534774267
 GameObject:
   m_ObjectHideFlags: 0
