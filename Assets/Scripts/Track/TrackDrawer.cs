@@ -48,6 +48,6 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     private void StopDrawing()
     {
-        m_trackMeshGenerator.ClearPreviousWaypoint();
+        m_trackMeshGenerator.EndPath();
     }
 }

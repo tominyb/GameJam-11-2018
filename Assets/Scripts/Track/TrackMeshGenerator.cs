@@ -19,86 +19,11 @@ public class TrackMeshGenerator : MonoBehaviour
     private Vector2? m_previousWaypoint;
     private Vector3[] m_previousCuboidVertices;
 
-    struct CuboidBetweenWaypoints
+    struct MeshData
     {
         public Vector3[] Vertices;
         public Vector3[] Normals;
         public int[] Triangles;
-
-        public CuboidBetweenWaypoints(
-            Vector2 start, Vector2 end, float width, float thickness, int triangleOffset,
-            Vector3[] previousCuboidVertices)
-        {
-            // TODO: Clean up.
-            float halfWidth = width * 0.5f;
-            float halfThickness = thickness * 0.5f;
-            Vector2 surfaceTangent = (end - start).normalized;
-            Vector3 topNormal = Quaternion.Euler(0, 0, 90) * surfaceTangent;
-            Vector2 offset = topNormal * halfThickness;
-            Vector3 startTopFront, startTopBack, startBottomFront, startBottomBack;
-            if (previousCuboidVertices != null)
-            {
-                startTopFront = previousCuboidVertices[1];
-                startTopBack = previousCuboidVertices[2];
-                startBottomFront = previousCuboidVertices[5];
-                startBottomBack = previousCuboidVertices[6];
-            }
-            else
-            {
-                Vector2 startTop = start + offset;
-                Vector2 startBottom = start - offset;
-                startTopFront = new Vector3(startTop.x, startTop.y, -halfWidth);
-                startTopBack = new Vector3(startTop.x, startTop.y, halfWidth);
-                startBottomFront = new Vector3(startBottom.x, startBottom.y, -halfWidth);
-                startBottomBack = new Vector3(startBottom.x, startBottom.y, halfWidth);
-            }
-            Vector2 endTop = end + offset;
-            Vector2 endBottom = end - offset;
-            Vector3 endTopFront = new Vector3(endTop.x, endTop.y, -halfWidth);
-            Vector3 endTopBack = new Vector3(endTop.x, endTop.y, halfWidth);
-            Vector3 endBottomFront = new Vector3(endBottom.x, endBottom.y, -halfWidth);
-            Vector3 endBottomBack = new Vector3(endBottom.x, endBottom.y, halfWidth);
-            Vertices = new Vector3[]
-            {
-                // Top
-                startTopFront,
-                endTopFront,
-                endTopBack,
-                startTopBack,
-                // Bottom
-                startBottomFront,
-                endBottomFront,
-                endBottomBack,
-                startBottomBack,
-                // Front
-                startTopFront,
-                endTopFront,
-                endBottomFront,
-                startBottomFront
-            };
-            {
-                Vector3 bottomNormal = Quaternion.Euler(0, 0, 90) * surfaceTangent;
-                Vector3 frontNormal = Vector3.back;
-                Normals = new Vector3[]
-                {
-                    topNormal, topNormal, topNormal, topNormal,
-                    bottomNormal, bottomNormal, bottomNormal, bottomNormal,
-                    frontNormal, frontNormal, frontNormal, frontNormal
-                };
-            }
-            Triangles = new int[]
-            {
-                // Top
-                triangleOffset, triangleOffset + 2, triangleOffset + 1,
-                triangleOffset, triangleOffset + 3, triangleOffset + 2,
-                // Bottom
-                triangleOffset + 4, triangleOffset + 5, triangleOffset + 6,
-                triangleOffset + 6, triangleOffset + 7, triangleOffset + 4,
-                // Front
-                triangleOffset + 8, triangleOffset + 9, triangleOffset + 10,
-                triangleOffset + 10, triangleOffset + 11, triangleOffset + 8
-            };
-        }
     }
 
     private void Start()
@@ -141,26 +66,120 @@ public class TrackMeshGenerator : MonoBehaviour
         }
         if (m_previousWaypoint != null)
         {
-            Mesh previousMesh = m_meshFilter.sharedMesh;
-            Mesh mesh = new Mesh();
-            CuboidBetweenWaypoints cuboid = new CuboidBetweenWaypoints(
-                (Vector2) m_previousWaypoint, waypoint,
-                m_trackWidth, m_trackThickness,
-                previousMesh.vertices.Length,
-                m_previousCuboidVertices);
-            mesh.vertices = previousMesh.vertices.Concat(cuboid.Vertices).ToArray();
-            mesh.normals = previousMesh.normals.Concat(cuboid.Normals).ToArray();
-            mesh.triangles = previousMesh.triangles.Concat(cuboid.Triangles).ToArray();
-            m_meshFilter.sharedMesh = mesh;
+            MeshData cuboid = GetCuboidBetweenWaypoints((Vector2) m_previousWaypoint, waypoint);
+            AddMeshData(cuboid);
             m_previousCuboidVertices = cuboid.Vertices;
-            m_meshCollider.sharedMesh = mesh;
         }
         m_previousWaypoint = waypoint;
     }
 
-    public void ClearPreviousWaypoint()
+    private void AddMeshData(MeshData meshData)
     {
+        Mesh previousMesh = m_meshFilter.sharedMesh;
+        Mesh mesh = new Mesh
+        {
+            vertices = previousMesh.vertices.Concat(meshData.Vertices).ToArray(),
+            normals = previousMesh.normals.Concat(meshData.Normals).ToArray(),
+            triangles = previousMesh.triangles.Concat(meshData.Triangles).ToArray()
+        };
+        m_meshFilter.sharedMesh = mesh;
+        m_meshCollider.sharedMesh = mesh;
+    }
+
+    private MeshData GetCuboidBetweenWaypoints(Vector2 start, Vector2 end)
+    {
+        float halfWidth = m_trackWidth * 0.5f;
+        float halfThickness = m_trackThickness * 0.5f;
+        Vector2 surfaceTangent = (end - start).normalized;
+        Vector3 topNormal = Quaternion.Euler(0, 0, 90) * surfaceTangent;
+        Vector2 offset = topNormal * halfThickness;
+        Vector3 startTopFront, startTopBack, startBottomFront, startBottomBack;
+        if (m_previousCuboidVertices != null)
+        {
+            startTopFront = m_previousCuboidVertices[1];
+            startTopBack = m_previousCuboidVertices[2];
+            startBottomFront = m_previousCuboidVertices[5];
+            startBottomBack = m_previousCuboidVertices[6];
+        }
+        else
+        {
+            Vector2 startTop = start + offset;
+            Vector2 startBottom = start - offset;
+            startTopFront = new Vector3(startTop.x, startTop.y, -halfWidth);
+            startTopBack = new Vector3(startTop.x, startTop.y, halfWidth);
+            startBottomFront = new Vector3(startBottom.x, startBottom.y, -halfWidth);
+            startBottomBack = new Vector3(startBottom.x, startBottom.y, halfWidth);
+        }
+        Vector2 endTop = end + offset;
+        Vector2 endBottom = end - offset;
+        Vector3 endTopFront = new Vector3(endTop.x, endTop.y, -halfWidth);
+        Vector3 endTopBack = new Vector3(endTop.x, endTop.y, halfWidth);
+        Vector3 endBottomFront = new Vector3(endBottom.x, endBottom.y, -halfWidth);
+        Vector3 endBottomBack = new Vector3(endBottom.x, endBottom.y, halfWidth);
+        MeshData meshData;
+        meshData.Vertices = new Vector3[]
+        {
+            startTopFront, endTopFront, endTopBack, startTopBack, // Top
+            startBottomFront, endBottomFront, endBottomBack, startBottomBack, // Bottom
+            startTopFront, endTopFront, endBottomFront, startBottomFront, // Front
+            startTopBack, endTopBack, endBottomBack, startBottomBack // Back
+        };
+        {
+            Vector3 bottomNormal = Quaternion.Euler(0, 0, -90) * surfaceTangent;
+            Vector3 frontNormal = Vector3.back;
+            Vector3 backNormal = Vector3.forward;
+            meshData.Normals = new Vector3[]
+            {
+                topNormal, topNormal, topNormal, topNormal,
+                bottomNormal, bottomNormal, bottomNormal, bottomNormal,
+                frontNormal, frontNormal, frontNormal, frontNormal,
+                backNormal, backNormal, backNormal, backNormal
+            };
+        }
+        int triangleOffset = m_meshFilter.sharedMesh.vertices.Length;
+        meshData.Triangles = new int[]
+        {
+            // Top
+            triangleOffset, triangleOffset + 2, triangleOffset + 1,
+            triangleOffset, triangleOffset + 3, triangleOffset + 2,
+            // Bottom
+            triangleOffset + 4, triangleOffset + 5, triangleOffset + 6,
+            triangleOffset + 6, triangleOffset + 7, triangleOffset + 4,
+            // Front
+            triangleOffset + 8, triangleOffset + 9, triangleOffset + 10,
+            triangleOffset + 10, triangleOffset + 11, triangleOffset + 8,
+            // Back
+            triangleOffset + 12, triangleOffset + 14, triangleOffset + 13,
+            triangleOffset + 14, triangleOffset + 12, triangleOffset + 15
+        };
+        return meshData;
+    }
+
+    public void EndPath()
+    {
+        AddMeshData(GetTrailingFace());
         m_previousWaypoint = null;
         m_previousCuboidVertices = null;
+    }
+
+    private MeshData GetTrailingFace()
+    {
+        MeshData meshData;
+        meshData.Vertices = new Vector3[]
+        {
+            m_previousCuboidVertices[1], // etf
+            m_previousCuboidVertices[2], // etb
+            m_previousCuboidVertices[5], // ebf
+            m_previousCuboidVertices[6] // ebb
+        };
+        Vector3 normal = m_previousCuboidVertices[1] - m_previousCuboidVertices[0];
+        meshData.Normals = new Vector3[] { normal, normal, normal, normal };
+        int triangleOffset = m_meshFilter.sharedMesh.vertices.Length;
+        meshData.Triangles = new int[]
+        {
+            triangleOffset, triangleOffset + 1, triangleOffset + 2,
+            triangleOffset + 2, triangleOffset + 1, triangleOffset + 3
+        };
+        return meshData;
     }
 }
