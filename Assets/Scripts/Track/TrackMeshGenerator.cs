@@ -231,4 +231,14 @@ public class TrackMeshGenerator : MonoBehaviour
         };
         return meshData;
     }
+
+    public void Reset()
+    {
+        m_meshFilter.sharedMesh = new Mesh();
+        m_meshCollider.sharedMesh = new Mesh();
+        m_previousWaypoint = null;
+        m_totalWaypointCount = 0;
+        m_previousCuboidVertices = null;
+        m_uvStartX = 0.0f;
+    }
 }
