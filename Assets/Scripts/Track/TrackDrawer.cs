@@ -26,15 +26,6 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
-        {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100.0f, m_nonTrackLayerMask))
-            {
-                StopDrawing();
-                return;
-            }
-        }
         float distance = Vector2.Distance(m_points[m_points.Count - 1], eventData.position);
         if (distance >= DistanceBetweenPoints)
         {
@@ -42,8 +33,18 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             if (m_points.Count > m_smoothLimit)
             {
                 SmoothWaypoints();
+                Vector2 point = m_points[m_points.Count - 1];
+                {
+                    RaycastHit hit;
+                    Ray ray = Camera.main.ScreenPointToRay(point);
+                    if (Physics.Raycast(ray, out hit, 100.0f, m_nonTrackLayerMask))
+                    {
+                        StopDrawing();
+                        return;
+                    }
+                }
                 m_trackMeshGenerator.AddWaypoint(
-                    Camera.main.ScreenToWorldPoint((Vector3) m_points[m_points.Count - 1]
+                    Camera.main.ScreenToWorldPoint((Vector3) point
                     - new Vector3(0.0f, 0.0f, Camera.main.transform.position.z)));
             }
         }
