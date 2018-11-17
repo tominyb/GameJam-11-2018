@@ -4,8 +4,6 @@ using UnityEngine.EventSystems;
 
 public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    private const float DistanceBetweenPoints = 1.0f;
-
     [SerializeField] [Range(0, 1)] private float m_smoothingFactor = 0.2f;
     [SerializeField] private int m_smoothLimit = 4;
     [SerializeField] private TrackMeshGenerator m_trackMeshGenerator;
@@ -26,28 +24,25 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
-        float distance = Vector2.Distance(m_points[m_points.Count - 1], eventData.position);
-        if (distance >= DistanceBetweenPoints)
+        m_points.Add(eventData.position);
+        if (m_points.Count <= m_smoothLimit)
         {
-            m_points.Add(eventData.position);
-            if (m_points.Count > m_smoothLimit)
+            return;
+        }
+        SmoothWaypoints();
+        Vector2 point = m_points[m_points.Count - 1];
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(point);
+            if (Physics.Raycast(ray, out hit, 100.0f, m_nonTrackLayerMask))
             {
-                SmoothWaypoints();
-                Vector2 point = m_points[m_points.Count - 1];
-                {
-                    RaycastHit hit;
-                    Ray ray = Camera.main.ScreenPointToRay(point);
-                    if (Physics.Raycast(ray, out hit, 100.0f, m_nonTrackLayerMask))
-                    {
-                        StopDrawing();
-                        return;
-                    }
-                }
-                m_trackMeshGenerator.AddWaypoint(
-                    Camera.main.ScreenToWorldPoint((Vector3) point
-                    - new Vector3(0.0f, 0.0f, Camera.main.transform.position.z)));
+                StopDrawing();
+                return;
             }
         }
+        m_trackMeshGenerator.AddWaypoint(
+            Camera.main.ScreenToWorldPoint((Vector3) point
+            - new Vector3(0.0f, 0.0f, Camera.main.transform.position.z)));
     }
 
     private void SmoothWaypoints()
