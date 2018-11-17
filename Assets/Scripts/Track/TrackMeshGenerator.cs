@@ -157,9 +157,12 @@ public class TrackMeshGenerator : MonoBehaviour
 
     public void EndPath()
     {
-        AddMeshData(GetTrailingFace());
+        if (m_previousCuboidVertices != null)
+        {
+            AddMeshData(GetTrailingFace());
+            m_previousCuboidVertices = null;
+        }
         m_previousWaypoint = null;
-        m_previousCuboidVertices = null;
     }
 
     private MeshData GetTrailingFace()
