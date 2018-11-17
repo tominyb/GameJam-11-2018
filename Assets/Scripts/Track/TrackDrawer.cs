@@ -27,7 +27,6 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 100.0f, m_nonTrackLayerMask))
             {
-                Debug.Log(hit.collider.gameObject);
                 StopDrawing();
                 return;
             }
