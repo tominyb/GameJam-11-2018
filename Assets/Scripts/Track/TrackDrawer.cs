@@ -3,11 +3,17 @@ using UnityEngine.EventSystems;
 
 public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    private const float DistanceBetweenPoints = 4.0f;
+    private const float DistanceBetweenPoints = 1.0f;
 
     [SerializeField] private TrackMeshGenerator m_trackMeshGenerator;
 
+    private int m_nonTrackLayerMask;
     private Vector2 m_previousPoint;
+
+    private void Start()
+    {
+        m_nonTrackLayerMask = ~LayerMask.GetMask("Surface");
+    }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -16,6 +22,16 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, 100.0f, m_nonTrackLayerMask))
+            {
+                Debug.Log(hit.collider.gameObject);
+                StopDrawing();
+                return;
+            }
+        }
         float distance = Vector2.Distance(m_previousPoint, eventData.position);
         if (distance >= DistanceBetweenPoints)
         {
@@ -27,6 +43,11 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     }
 
     public void OnEndDrag(PointerEventData eventData)
+    {
+        StopDrawing();
+    }
+
+    private void StopDrawing()
     {
         m_trackMeshGenerator.ClearPreviousWaypoint();
     }

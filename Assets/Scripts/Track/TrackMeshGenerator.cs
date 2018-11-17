@@ -12,6 +12,7 @@ public class TrackMeshGenerator : MonoBehaviour
     [SerializeField] private float m_trackThickness;
     [SerializeField] private int m_maxWaypointCount;
     [SerializeField] private Material m_material;
+
     private MeshFilter m_meshFilter;
     private MeshCollider m_meshCollider;
     private int m_totalWaypointCount;
