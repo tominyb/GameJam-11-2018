@@ -1084,17 +1084,8 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114797289946342142, guid: e7ff0f5e04646304cbd3cb8bf5901d04,
-        type: 2}
-      propertyPath: m_minVelocity
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 114797289946342142, guid: e7ff0f5e04646304cbd3cb8bf5901d04,
-        type: 2}
-      propertyPath: m_maxVelocity
-      value: 20
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 135616272965920622, guid: e7ff0f5e04646304cbd3cb8bf5901d04, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: e7ff0f5e04646304cbd3cb8bf5901d04, type: 2}
   m_IsPrefabAsset: 0
 --- !u!1 &1350411969
@@ -1627,6 +1618,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96a0b072eb47e1041afc7016bdd7e175, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_drawTimeScale: 0.5
   m_smoothingFactor: 0.2
   m_smoothLimit: 4
   m_trackMeshGenerator: {fileID: 1807544100}
