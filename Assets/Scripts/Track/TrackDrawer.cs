@@ -70,4 +70,9 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     {
         m_trackMeshGenerator.EndPath();
     }
+
+    public void SetMeshGenerator(TrackMeshGenerator meshGenerator)
+    {
+        m_trackMeshGenerator = meshGenerator;
+    }
 }
