@@ -62,7 +62,7 @@ public class TrackMeshGenerator : MonoBehaviour
         if (m_previousWaypoint != null)
         {
             Vector2 previousWaypoint = (Vector2) m_previousWaypoint;
-            if (m_meshFilter.sharedMesh.vertices.Length == 0)
+            if (m_previousCuboidVertices == null)
             {
                 AddMeshData(GetLeadingFace(previousWaypoint, waypoint));
             }
@@ -184,7 +184,12 @@ public class TrackMeshGenerator : MonoBehaviour
         };
         Vector3 normal = (start - end).normalized;
         meshData.Normals = new Vector3[] { normal, normal, normal, normal };
-        meshData.Triangles = new int[] { 0, 3, 1, 2, 3, 0 };
+        int triangleOffset = m_meshFilter.sharedMesh.vertices.Length;
+        meshData.Triangles = new int[]
+        {
+            triangleOffset, triangleOffset + 3, triangleOffset + 1,
+            triangleOffset + 2, triangleOffset + 3, triangleOffset
+        };
         return meshData;
     }
 
