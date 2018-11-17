@@ -3,14 +3,21 @@
 [RequireComponent(typeof(Camera))]
 public class CameraFollowTarget : MonoBehaviour
 {
+    public bool IsFollowing { get; set; }
+
     [SerializeField] private float          m_speed;
     [SerializeField] private float          m_threshold;
     [SerializeField] private Vector2        m_offset;
     [SerializeField] private GameObject     m_target;
 
+    private void Start()
+    {
+        IsFollowing = true;
+    }
+
     private void FixedUpdate()
     {
-        if (m_target == null)
+        if (m_target == null || !IsFollowing)
             return;
 
         Vector2 pos = transform.position;

@@ -16,6 +16,7 @@ public class SurfaceSticker : MonoBehaviour
     };
 
     [SerializeField] private float m_raycastDistance;
+    [SerializeField] private float m_minVelocity;
     [SerializeField] private float m_maxVelocity;
 
     private RaycastHit m_contactPoint;
@@ -34,15 +35,14 @@ public class SurfaceSticker : MonoBehaviour
         if (m_surface)
         {
             m_surface.HandleContact(m_contactPoint.normal, m_rigidbody);
-            Debug.DrawLine
-            (
-            transform.position,
-            transform.position + m_rigidbody.velocity.normalized * 2f,
-            Color.red
-            );
+        }
+        else
+        {
+            Physics.gravity = Vector3.down * Physics.gravity.magnitude;
         }
 
-        m_rigidbody.velocity = m_rigidbody.velocity.normalized * (Mathf.Min(m_rigidbody.velocity.magnitude, m_maxVelocity));
+        m_rigidbody.velocity = m_rigidbody.velocity.normalized * 
+            Mathf.Max(Mathf.Min(m_rigidbody.velocity.magnitude, m_maxVelocity), m_minVelocity);
     }
 
     private SurfaceBehaviour ScanForSurfaces(out RaycastHit point)

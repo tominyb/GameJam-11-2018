@@ -4,9 +4,20 @@ public class Player : MonoBehaviour
 {
     public static Player I;
 
+    public delegate void HealthChanged(int newHealth);
+    public static event HealthChanged OnHealthChanged;
+
     [SerializeField] private int m_health;
     [SerializeField] private GameObject m_cameraFollowPoint;
     private Rigidbody m_rigidbody;
+
+    public int Health
+    {
+        get
+        {
+            return m_health;
+        }
+    }
 
     private void Awake()
     {
@@ -25,6 +36,8 @@ public class Player : MonoBehaviour
     public void TakeDamage(int damage)
     {
         m_health -= damage;
+        m_health = Mathf.Max(0, m_health);
+        OnHealthChanged(m_health);
 
         if (m_health <= 0)
         {

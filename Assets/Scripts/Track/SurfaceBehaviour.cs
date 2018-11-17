@@ -30,8 +30,6 @@ public class SurfaceBehaviour : MonoBehaviour
 
     private void Pull(Vector2 normal, Rigidbody other)
     {
-        Vector3 movement = other.velocity;
-        var tangential = Vector3.ProjectOnPlane(movement, normal).normalized;
-        other.velocity = tangential * movement.magnitude;
+        Physics.gravity = -normal * Physics.gravity.magnitude;
     }
 }

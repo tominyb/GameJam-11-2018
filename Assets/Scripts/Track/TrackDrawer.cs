@@ -10,16 +10,19 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     private int m_nonTrackLayerMask;
     private List<Vector2> m_points = new List<Vector2>();
+    private CameraFollowTarget m_cameraFollower;
 
     private void Start()
     {
         m_nonTrackLayerMask = ~LayerMask.GetMask("Surface");
+        m_cameraFollower = Camera.main.GetComponent<CameraFollowTarget>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         m_points.Clear();
         m_points.Add(eventData.position);
+        m_cameraFollower.IsFollowing = false;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -59,6 +62,7 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public void OnEndDrag(PointerEventData eventData)
     {
         StopDrawing();
+        m_cameraFollower.IsFollowing = true;
     }
 
     private void StopDrawing()
