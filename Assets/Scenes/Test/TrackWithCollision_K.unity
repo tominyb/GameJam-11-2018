@@ -1013,7 +1013,17 @@ Prefab:
     - target: {fileID: 114797289946342142, guid: e7ff0f5e04646304cbd3cb8bf5901d04,
         type: 2}
       propertyPath: m_maxVelocity
-      value: 15
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 114797289946342142, guid: e7ff0f5e04646304cbd3cb8bf5901d04,
+        type: 2}
+      propertyPath: m_raycastDistance
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 114797289946342142, guid: e7ff0f5e04646304cbd3cb8bf5901d04,
+        type: 2}
+      propertyPath: m_minVelocity
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7ff0f5e04646304cbd3cb8bf5901d04, type: 2}
