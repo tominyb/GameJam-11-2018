@@ -533,7 +533,7 @@ GameObject:
   - component: {fileID: 534774270}
   - component: {fileID: 534774269}
   m_Layer: 9
-  m_Name: TrackDecelerating
+  m_Name: TrackSuperAccelerating
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -563,7 +563,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e372ad55b7dc1c4a80936b21de4fe57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_forceFactor: -2
+  m_forceFactor: 10
   m_type: 0
 --- !u!64 &534774270
 MeshCollider:
@@ -720,7 +720,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: '2
 
-    <<'
+    >>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
@@ -832,7 +832,7 @@ GameObject:
   - component: {fileID: 944535103}
   - component: {fileID: 944535102}
   m_Layer: 5
-  m_Name: TrackSelectDecelerating
+  m_Name: TrackSelectSuperAccelerating
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1087,18 +1087,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
-    - target: {fileID: 4070868909779364, guid: e7ff0f5e04646304cbd3cb8bf5901d04, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4070868909779364, guid: e7ff0f5e04646304cbd3cb8bf5901d04, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4070868909779364, guid: e7ff0f5e04646304cbd3cb8bf5901d04, type: 2}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7ff0f5e04646304cbd3cb8bf5901d04, type: 2}
   m_IsPrefabAsset: 0
@@ -1338,7 +1326,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: '1
 
-    >>'
+    >'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
@@ -1406,7 +1394,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 0}
-    characterCount: 4
+    characterCount: 3
     spriteCount: 0
     spaceCount: 1
     wordCount: 1
