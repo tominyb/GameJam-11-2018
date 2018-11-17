@@ -31,16 +31,16 @@ public class SurfaceSticker : MonoBehaviour
     {
         m_surface = ScanForSurfaces(out m_contactPoint);
 
-        if (m_surface == null)
-            return;
-
-        m_surface.HandleContact(m_contactPoint.normal, m_rigidbody);
-
-        Debug.DrawLine(
+        if (m_surface)
+        {
+            m_surface.HandleContact(m_contactPoint.normal, m_rigidbody);
+            Debug.DrawLine
+            (
             transform.position,
             transform.position + m_rigidbody.velocity.normalized * 2f,
             Color.red
-        );
+            );
+        }
 
         m_rigidbody.velocity = m_rigidbody.velocity.normalized * (Mathf.Min(m_rigidbody.velocity.magnitude, m_maxVelocity));
     }
