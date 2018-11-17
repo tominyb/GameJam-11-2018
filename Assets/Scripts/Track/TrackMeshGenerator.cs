@@ -7,16 +7,19 @@ public class TrackMeshGenerator : MonoBehaviour
     [SerializeField] private float m_trackThickness;
     [SerializeField] private int m_maxWaypointCount;
     [SerializeField] private Material m_material;
+    [SerializeField] private float m_uvXPerUnit;
 
     private MeshFilter m_meshFilter;
     private MeshCollider m_meshCollider;
     private int m_totalWaypointCount;
     private Vector2? m_previousWaypoint;
     private Vector3[] m_previousCuboidVertices;
+    private float m_uvStartX;
 
     struct MeshData
     {
         public Vector3[] Vertices;
+        public Vector2[] UV;
         public Vector3[] Normals;
         public int[] Triangles;
     }
@@ -79,6 +82,7 @@ public class TrackMeshGenerator : MonoBehaviour
         Mesh mesh = new Mesh
         {
             vertices = previousMesh.vertices.Concat(meshData.Vertices).ToArray(),
+            uv = previousMesh.uv.Concat(meshData.UV).ToArray(),
             normals = previousMesh.normals.Concat(meshData.Normals).ToArray(),
             triangles = previousMesh.triangles.Concat(meshData.Triangles).ToArray()
         };
@@ -90,7 +94,10 @@ public class TrackMeshGenerator : MonoBehaviour
     {
         float halfWidth = m_trackWidth * 0.5f;
         float halfThickness = m_trackThickness * 0.5f;
-        Vector2 surfaceTangent = (end - start).normalized;
+        Vector2 direction = end - start;
+        float magnitude = direction.magnitude;
+        float uvEndX = m_uvStartX + (magnitude * m_uvXPerUnit);
+        Vector2 surfaceTangent = direction / magnitude;
         Vector3 topNormal = Quaternion.Euler(0, 0, 90) * surfaceTangent;
         Vector2 offset = topNormal * halfThickness;
         Vector3 startTopFront, startTopBack, startBottomFront, startBottomBack;
@@ -124,6 +131,14 @@ public class TrackMeshGenerator : MonoBehaviour
             startTopFront, endTopFront, endBottomFront, startBottomFront, // Front
             startTopBack, endTopBack, endBottomBack, startBottomBack // Back
         };
+        meshData.UV = new Vector2[]
+        {
+            new Vector2(m_uvStartX, 0), new Vector2(uvEndX, 0), new Vector2(uvEndX, 1), new Vector2(m_uvStartX, 1),
+            new Vector2(m_uvStartX, 0), new Vector2(uvEndX, 0), new Vector2(uvEndX, 1), new Vector2(m_uvStartX, 1),
+            Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero,
+            Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero
+        };
+        m_uvStartX = uvEndX;
         {
             Vector3 bottomNormal = Quaternion.Euler(0, 0, -90) * surfaceTangent;
             Vector3 frontNormal = Vector3.back;
@@ -163,6 +178,7 @@ public class TrackMeshGenerator : MonoBehaviour
             m_previousCuboidVertices = null;
         }
         m_previousWaypoint = null;
+        m_uvStartX = 0.0f;
     }
 
     private MeshData GetLeadingFace(Vector2 start, Vector2 end)
@@ -182,6 +198,7 @@ public class TrackMeshGenerator : MonoBehaviour
             new Vector3(startBottom.x, startBottom.y, -halfWidth),
             new Vector3(startBottom.x, startBottom.y, halfWidth)
         };
+        meshData.UV = new Vector2[] { Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero };
         Vector3 normal = (start - end).normalized;
         meshData.Normals = new Vector3[] { normal, normal, normal, normal };
         int triangleOffset = m_meshFilter.sharedMesh.vertices.Length;
@@ -203,6 +220,7 @@ public class TrackMeshGenerator : MonoBehaviour
             m_previousCuboidVertices[5],
             m_previousCuboidVertices[6]
         };
+        meshData.UV = new Vector2[] { Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero };
         Vector3 normal = m_previousCuboidVertices[1] - m_previousCuboidVertices[0];
         meshData.Normals = new Vector3[] { normal, normal, normal, normal };
         int triangleOffset = m_meshFilter.sharedMesh.vertices.Length;

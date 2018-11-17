@@ -282,6 +282,7 @@ MonoBehaviour:
   m_trackThickness: 0.25
   m_maxWaypointCount: 1000
   m_material: {fileID: 2100000, guid: 8c38c31870c1bf3488ce35161f6c66ef, type: 2}
+  m_uvXPerUnit: 1
 --- !u!1 &354624384
 GameObject:
   m_ObjectHideFlags: 0
@@ -518,6 +519,7 @@ MonoBehaviour:
   m_trackThickness: 0.25
   m_maxWaypointCount: 1000
   m_material: {fileID: 2100000, guid: 53841bb4b0886f24cbf78652f5d48552, type: 2}
+  m_uvXPerUnit: 1
 --- !u!1 &663559055
 GameObject:
   m_ObjectHideFlags: 0
@@ -1537,6 +1539,7 @@ MonoBehaviour:
   m_trackThickness: 0.25
   m_maxWaypointCount: 1000
   m_material: {fileID: 2100000, guid: 53841bb4b0886f24cbf78652f5d48552, type: 2}
+  m_uvXPerUnit: 1
 --- !u!4 &1807544101
 Transform:
   m_ObjectHideFlags: 0
