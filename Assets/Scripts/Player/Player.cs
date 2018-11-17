@@ -44,4 +44,10 @@ public class Player : MonoBehaviour
             Debug.Log("Player has died.");
         }
     }
+
+    public void ResetForces()
+    {
+        m_rigidbody.velocity = Vector3.zero;
+        m_rigidbody.rotation = Quaternion.identity;
+    }
 }

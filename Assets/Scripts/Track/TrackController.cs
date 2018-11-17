@@ -52,4 +52,10 @@ public class TrackController : MonoBehaviour
             track.MeshGenerator.enabled = track == m_selected;
         }
     }
+
+    public void ResetAll()
+    {
+        foreach (var track in m_tracks)
+            track.MeshGenerator.ResetMesh();
+    }
 }

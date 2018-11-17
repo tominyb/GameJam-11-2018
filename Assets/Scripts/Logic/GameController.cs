@@ -4,20 +4,24 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private Player player;
+    [Header("Game")]
+    [SerializeField] private Player m_player;
+    [SerializeField] private Zone m_endZone;
+    [SerializeField] private TrackController m_trackController;
 
     [Header("UI Components")]
-    [SerializeField] private TextMeshProUGUI splashText;
+    [SerializeField] private TextMeshProUGUI m_splashText;
 
     private void Awake()
     {
-        if (!player)
+        if (!m_player)
             Debug.LogError("No player character set!");
     }
 
     private void Start()
     {
-        splashText.gameObject.SetActive(false);
+        m_endZone.OnPlayerEnter(CompleteLevel);
+        m_splashText.gameObject.SetActive(false);
         StartCoroutine(ILevelRoutine());
     }
 
@@ -31,42 +35,48 @@ public class GameController : MonoBehaviour
     {
         Time.timeScale = 0;
 
-        splashText.gameObject.SetActive(true);
+        m_splashText.gameObject.SetActive(true);
         for (var i = 3; i != 0; --i)
         {
-            splashText.text = i.ToString();
-            Debug.Log(i);
+            m_splashText.text = i.ToString();
             yield return new WaitForSecondsRealtime(1);
         }
 
-        splashText.text = "";
-        splashText.gameObject.SetActive(false);
+        m_splashText.text = "";
+        m_splashText.gameObject.SetActive(false);
 
         Time.timeScale = 1;
-        while (player.Health > 0)
+        while (m_player.Health > 0)
         {
             yield return null;
         }
         
-        splashText.gameObject.SetActive(true);
-        splashText.text = "You lost...";
+        m_splashText.gameObject.SetActive(true);
+        m_splashText.text = "You lost...";
+        StartCoroutine(IStartLevelResetRoutine());
+    }
+
+    private IEnumerator IStartLevelResetRoutine()
+    {
         yield return new WaitForSeconds(3);
 
         ResetLevel();
     }
 
-
-
     private void ResetLevel()
     {
-        player.TakeDamage(-10);
-        player.transform.position = Vector3.zero;
+        m_player.TakeDamage(-10);
+        m_player.transform.position = Vector3.zero;
+        m_player.ResetForces();
+        m_trackController.ResetAll();
         StopAllCoroutines();
         StartCoroutine(ILevelRoutine());
     }
 
-    private void CompleteLevel(bool win)
+    private void CompleteLevel()
     {
-
+        m_splashText.gameObject.SetActive(true);
+        m_splashText.text = "You win!";
+        StartCoroutine(IStartLevelResetRoutine());
     }
 }
