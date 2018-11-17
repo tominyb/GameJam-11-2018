@@ -4,6 +4,9 @@ public class Player : MonoBehaviour
 {
     public static Player I;
 
+    public delegate void HealthChanged(int health);
+    public static event HealthChanged OnHealthChanged;
+
     [SerializeField] private int m_health;
     [SerializeField] private GameObject m_cameraFollowPoint;
     private Rigidbody m_rigidbody;
@@ -33,6 +36,7 @@ public class Player : MonoBehaviour
     public void TakeDamage(int damage)
     {
         m_health -= damage;
+        OnHealthChanged(-damage);
 
         if (m_health <= 0)
         {
