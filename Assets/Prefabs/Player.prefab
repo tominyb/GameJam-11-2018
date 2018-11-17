@@ -155,8 +155,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d136c285ace6f0f489d2b82d9ca51450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_raycastDistance: 0.6
-  m_maxVelocity: 5
+  m_raycastDistance: 0.75
+  m_minVelocity: 3
+  m_maxVelocity: 10
 --- !u!135 &135518666622294256
 SphereCollider:
   m_ObjectHideFlags: 1
