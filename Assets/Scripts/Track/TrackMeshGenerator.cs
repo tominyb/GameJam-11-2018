@@ -167,10 +167,10 @@ public class TrackMeshGenerator : MonoBehaviour
         MeshData meshData;
         meshData.Vertices = new Vector3[]
         {
-            m_previousCuboidVertices[1], // etf
-            m_previousCuboidVertices[2], // etb
-            m_previousCuboidVertices[5], // ebf
-            m_previousCuboidVertices[6] // ebb
+            m_previousCuboidVertices[1],
+            m_previousCuboidVertices[2],
+            m_previousCuboidVertices[5],
+            m_previousCuboidVertices[6]
         };
         Vector3 normal = m_previousCuboidVertices[1] - m_previousCuboidVertices[0];
         meshData.Normals = new Vector3[] { normal, normal, normal, normal };
