@@ -26,7 +26,12 @@ public class HealthDisplay : MonoBehaviour
     private void OnHealthChanged(int newHealth)
     {
         int iconCount = m_icons.Length;
-        for (int i = newHealth; i < iconCount; ++i)
+        int i;
+        for (i = 0; i < newHealth; ++i)
+        {
+            m_icons[i].SetActive(true);
+        }
+        for (; i < iconCount; ++i)
         {
             m_icons[i].SetActive(false);
         }
