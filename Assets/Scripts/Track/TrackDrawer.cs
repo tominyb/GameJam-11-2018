@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 
 public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    [SerializeField] [Range(0, 1)] private float m_drawTimeScale = 0.5f;
     [SerializeField] [Range(0, 1)] private float m_smoothingFactor = 0.2f;
     [SerializeField] private int m_smoothLimit = 4;
     [SerializeField] private TrackMeshGenerator m_trackMeshGenerator;
@@ -23,6 +24,8 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         m_points.Clear();
         m_points.Add(eventData.position);
         m_cameraFollower.IsFollowing = false;
+        Time.timeScale = m_drawTimeScale;
+        Time.fixedDeltaTime *= m_drawTimeScale;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -63,6 +66,8 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     {
         StopDrawing();
         m_cameraFollower.IsFollowing = true;
+        Time.timeScale = 1;
+        Time.fixedDeltaTime /= m_drawTimeScale;
     }
 
     private void StopDrawing()
