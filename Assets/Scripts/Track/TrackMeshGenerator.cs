@@ -3,11 +3,6 @@ using UnityEngine;
 
 public class TrackMeshGenerator : MonoBehaviour
 {
-    private const int VerticesPerQuad = 4;
-    private const int NormalsPerQuad = VerticesPerQuad;
-    private const int TrianglesPerQuad = 2;
-    private const int TriangleIndicesPerQuad = TrianglesPerQuad * 3;
-
     [SerializeField] private float m_trackWidth;
     [SerializeField] private float m_trackThickness;
     [SerializeField] private int m_maxWaypointCount;
@@ -66,7 +61,12 @@ public class TrackMeshGenerator : MonoBehaviour
         }
         if (m_previousWaypoint != null)
         {
-            MeshData cuboid = GetCuboidBetweenWaypoints((Vector2) m_previousWaypoint, waypoint);
+            Vector2 previousWaypoint = (Vector2) m_previousWaypoint;
+            if (m_previousCuboidVertices == null)
+            {
+                AddMeshData(GetLeadingFace(previousWaypoint, waypoint));
+            }
+            MeshData cuboid = GetCuboidBetweenWaypoints(previousWaypoint, waypoint);
             AddMeshData(cuboid);
             m_previousCuboidVertices = cuboid.Vertices;
         }
@@ -163,6 +163,34 @@ public class TrackMeshGenerator : MonoBehaviour
             m_previousCuboidVertices = null;
         }
         m_previousWaypoint = null;
+    }
+
+    private MeshData GetLeadingFace(Vector2 start, Vector2 end)
+    {
+        float halfWidth = m_trackWidth * 0.5f;
+        float halfThickness = m_trackThickness * 0.5f;
+        Vector2 surfaceTangent = (end - start).normalized;
+        Vector3 topNormal = Quaternion.Euler(0, 0, 90) * surfaceTangent;
+        Vector2 offset = topNormal * halfThickness;
+        Vector2 startTop = start + offset;
+        Vector2 startBottom = start - offset;
+        MeshData meshData;
+        meshData.Vertices = new Vector3[]
+        {
+            new Vector3(startTop.x, startTop.y, -halfWidth),
+            new Vector3(startTop.x, startTop.y, halfWidth),
+            new Vector3(startBottom.x, startBottom.y, -halfWidth),
+            new Vector3(startBottom.x, startBottom.y, halfWidth)
+        };
+        Vector3 normal = (start - end).normalized;
+        meshData.Normals = new Vector3[] { normal, normal, normal, normal };
+        int triangleOffset = m_meshFilter.sharedMesh.vertices.Length;
+        meshData.Triangles = new int[]
+        {
+            triangleOffset, triangleOffset + 3, triangleOffset + 1,
+            triangleOffset + 2, triangleOffset + 3, triangleOffset
+        };
+        return meshData;
     }
 
     private MeshData GetTrailingFace()
