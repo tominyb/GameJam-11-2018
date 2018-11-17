@@ -4,22 +4,28 @@ using UnityEngine.EventSystems;
 
 public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    [SerializeField] [Range(0, 1)] private float m_drawTimeScale = 0.5f;
     [SerializeField] [Range(0, 1)] private float m_smoothingFactor = 0.2f;
     [SerializeField] private int m_smoothLimit = 4;
     [SerializeField] private TrackMeshGenerator m_trackMeshGenerator;
 
     private int m_nonTrackLayerMask;
     private List<Vector2> m_points = new List<Vector2>();
+    private CameraFollowTarget m_cameraFollower;
 
     private void Start()
     {
         m_nonTrackLayerMask = ~LayerMask.GetMask("Surface");
+        m_cameraFollower = Camera.main.GetComponent<CameraFollowTarget>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         m_points.Clear();
         m_points.Add(eventData.position);
+        m_cameraFollower.IsFollowing = false;
+        Time.timeScale = m_drawTimeScale;
+        Time.fixedDeltaTime *= m_drawTimeScale;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -59,6 +65,9 @@ public class TrackDrawer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public void OnEndDrag(PointerEventData eventData)
     {
         StopDrawing();
+        m_cameraFollower.IsFollowing = true;
+        Time.timeScale = 1;
+        Time.fixedDeltaTime /= m_drawTimeScale;
     }
 
     private void StopDrawing()
