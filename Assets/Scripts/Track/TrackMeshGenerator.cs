@@ -103,9 +103,15 @@ public class TrackMeshGenerator : MonoBehaviour
 
     private void Start()
     {
+        InitLayerMask();
         InitMeshRenderer();
         InitMeshFilter();
         InitMeshCollider();
+    }
+
+    private void InitLayerMask()
+    {
+        gameObject.layer = LayerMask.NameToLayer("Surface");
     }
 
     private void InitMeshRenderer()
