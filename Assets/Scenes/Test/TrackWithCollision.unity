@@ -885,7 +885,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_icon: {fileID: 1683067916676570, guid: 14f5b55d4543d8d448f3ce9ecafd917a, type: 2}
-  m_health: 3
+  m_player: {fileID: 1508075113}
 --- !u!1 &1087654134
 GameObject:
   m_ObjectHideFlags: 0
@@ -1265,6 +1265,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1144677458904592, guid: e7ff0f5e04646304cbd3cb8bf5901d04,
     type: 2}
   m_PrefabInternal: {fileID: 1142034352}
+--- !u!114 &1508075113 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114760165748281160, guid: e7ff0f5e04646304cbd3cb8bf5901d04,
+    type: 2}
+  m_PrefabInternal: {fileID: 1142034352}
+  m_Script: {fileID: 11500000, guid: f1215dccf38b02545a242028a4320281, type: 3}
 --- !u!1 &1522342459
 GameObject:
   m_ObjectHideFlags: 0
