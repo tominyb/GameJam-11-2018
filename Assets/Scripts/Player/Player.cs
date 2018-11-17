@@ -8,6 +8,14 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject m_cameraFollowPoint;
     private Rigidbody m_rigidbody;
 
+    public int Health
+    {
+        get
+        {
+            return m_health;
+        }
+    }
+
     private void Awake()
     {
         I = this;
