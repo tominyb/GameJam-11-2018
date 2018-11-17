@@ -7,15 +7,24 @@ public class Player : MonoBehaviour
     public delegate void HealthChanged(int newHealth);
     public event HealthChanged OnHealthChanged;
 
+    public int MaxHealth
+    {
+        get { return m_maxHealth; }
+    }
+
     [SerializeField] private int m_health;
     [SerializeField] private GameObject m_cameraFollowPoint;
+
     private Rigidbody m_rigidbody;
+    private int m_maxHealth;
 
     public int Health
     {
-        get
+        get { return m_health; }
+        set
         {
-            return m_health;
+            m_health = value;
+            OnHealthChanged?.Invoke(m_health);
         }
     }
 
@@ -23,6 +32,7 @@ public class Player : MonoBehaviour
     {
         I = this;
         m_rigidbody = GetComponent<Rigidbody>();
+        m_maxHealth = m_health;
     }
 
     private void FixedUpdate()
@@ -35,10 +45,7 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        m_health -= damage;
-        m_health = Mathf.Max(0, m_health);
-        OnHealthChanged?.Invoke(m_health);
-
+        Health = Mathf.Max(m_health - damage, 0);
         if (m_health <= 0)
         {
             Debug.Log("Player has died.");
