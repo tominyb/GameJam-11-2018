@@ -41,6 +41,7 @@ public class Player : MonoBehaviour
         Debug.DrawLine(m_rigidbody.position, transform.position + vel.normalized * 2f, Color.red);
         m_cameraFollowPoint.transform.position = m_rigidbody.position + vel.normalized * Mathf.Min(vel.magnitude, 10f);
         Debug.DrawLine(m_rigidbody.position, m_cameraFollowPoint.transform.position, Color.blue);
+        Debug.DrawLine(m_rigidbody.position, m_rigidbody.position + Physics.gravity * 5, Color.green);
     }
 
     public void TakeDamage(int damage)
