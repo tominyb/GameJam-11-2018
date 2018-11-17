@@ -1122,13 +1122,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f82dd1034aef9b48acb87e38a9a5cb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_drawer: {fileID: 0}
+  m_drawer: {fileID: 2134665164}
   m_tracks:
-  - SelectionImage: {fileID: 354624386}
+  - InputKey: 49
+    SelectionImage: {fileID: 354624386}
     MeshGenerator: {fileID: 1807544100}
-  - SelectionImage: {fileID: 944535102}
+  - InputKey: 50
+    SelectionImage: {fileID: 944535102}
     MeshGenerator: {fileID: 534774271}
-  - SelectionImage: {fileID: 663559057}
+  - InputKey: 51
+    SelectionImage: {fileID: 663559057}
     MeshGenerator: {fileID: 337810033}
 --- !u!4 &1360446744
 Transform:
@@ -1145,46 +1148,6 @@ Transform:
   - {fileID: 337810030}
   m_Father: {fileID: 0}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1457594704
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1457594706}
-  - component: {fileID: 1457594705}
-  m_Layer: 0
-  m_Name: GlobalInputHandler
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1457594705
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1457594704}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 759c2cc2e4190664e849ed23f48754cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &1457594706
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1457594704}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1508075112
 GameObject:
