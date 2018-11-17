@@ -1020,6 +1020,11 @@ Prefab:
       propertyPath: m_Interpolate
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114760165748281160, guid: e7ff0f5e04646304cbd3cb8bf5901d04,
+        type: 2}
+      propertyPath: m_cameraFollowPoint
+      value: 
+      objectReference: {fileID: 2007872985}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7ff0f5e04646304cbd3cb8bf5901d04, type: 2}
   m_IsPrefabAsset: 0
@@ -1201,6 +1206,11 @@ Transform:
 --- !u!1 &1508075112 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1144677458904592, guid: e7ff0f5e04646304cbd3cb8bf5901d04,
+    type: 2}
+  m_PrefabInternal: {fileID: 1142034352}
+--- !u!4 &1508075119 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4070868909779364, guid: e7ff0f5e04646304cbd3cb8bf5901d04,
     type: 2}
   m_PrefabInternal: {fileID: 1142034352}
 --- !u!1 &1522342459
@@ -1499,6 +1509,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_forceFactor: 2
   m_type: 0
+--- !u!1 &2007872985
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2007872986}
+  m_Layer: 0
+  m_Name: CameraFollowPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2007872986
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2007872985}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1508075119}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2134665162
 GameObject:
   m_ObjectHideFlags: 0
