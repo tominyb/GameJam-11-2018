@@ -67,6 +67,7 @@ public class GameController : MonoBehaviour
     {
         m_player.TakeDamage(-10);
         m_player.transform.position = Vector3.zero;
+        Camera.main.transform.position = new Vector3(0, 0, Camera.main.transform.position.z);
         m_player.ResetForces();
         m_trackController.ResetAll();
         StopAllCoroutines();
